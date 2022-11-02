@@ -63,9 +63,9 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const { resetContent, ...content } = useField('text')
-  const { resetAuthor, ...author } = useField('text')
-  const { resetInfo, ...info } = useField('url')
+  const { reset: resetContent, ...content } = useField('text')
+  const { reset: resetAuthor, ...author } = useField('text')
+  const { reset: resetInfo, ...info } = useField('url')
 
   const handleSubmit = (e) => {
     e.preventDefault()
