@@ -1,15 +1,13 @@
 import { useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import blogService from '../services/blogs'
+import { useDispatch } from 'react-redux'
 import { createNotification } from '../reducers/notificationReducer'
 import { setBlogs } from '../reducers/blogsReducer'
 import Togglable from './Togglable'
-import { useField } from '../hooks'
+import { useField, useResource } from '../hooks'
 
 const CreateBlogForm = () => {
   const dispatch = useDispatch()
-
-  const blogs = useSelector((state) => state.blogs)
+  const [blogs, blogService] = useResource('/api/blogs')
 
   const { reset: resetNewTitle, ...newTitle } = useField('text')
   const { reset: resetNewAuthor, ...newAuthor } = useField('text')

@@ -3,8 +3,9 @@ import { useDispatch } from 'react-redux'
 import Notification from './Notification'
 import loginService from '../services/login'
 import { createNotification } from '../reducers/notificationReducer'
-import blogService from '../services/blogs'
+// import blogService from '../services/blogs'
 import { setUser } from '../reducers/userReducer'
+import { setToken } from '../reducers/tokenReducer'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -21,7 +22,7 @@ const LoginForm = () => {
       })
 
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
+      dispatch(setToken(user.token))
       dispatch(setUser(user))
       setUsername('')
       setPassword('')

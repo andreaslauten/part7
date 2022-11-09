@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { setToken } from '../reducers/tokenReducer'
 import { useSelector } from 'react-redux'
 
 export const useField = (type) => {
@@ -77,8 +76,7 @@ export const useResource = (baseUrl) => {
     getAll,
     create,
     update,
-    remove,
-    setToken
+    remove
   }
 
   return [

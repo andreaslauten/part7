@@ -6,20 +6,32 @@ import LoginForm from './components/LoginForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from './reducers/userReducer'
 import UsersView from './components/UsersView'
-// import { useResource } from './hooks'
 import { setToken } from './reducers/tokenReducer'
+import { Link, Route, Routes, useMatch } from 'react-router-dom'
+import { useResource } from './hooks'
+import User from './components/User'
 
 const App = () => {
+  const padding = {
+    padding: 5
+  }
+
   const dispatch = useDispatch()
-  // const [, blogService] = useResource('/api/blogs')
-  const user = useSelector((state) => state.user)
+  const loggedUser = useSelector((state) => state.user)
+  const [users] = useResource('/api/users')
+
+  const match = useMatch('/users/:id')
+
+  const matchedUser = match
+    ? users.find(user => user.id === match.params.id)
+    : null
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      dispatch(setUser(user))
-      dispatch(setToken(user.token))
+      const loggedUser = JSON.parse(loggedUserJSON)
+      dispatch(setUser(loggedUser))
+      dispatch(setToken(loggedUser.token))
     }
   }, [])
 
@@ -30,7 +42,7 @@ const App = () => {
     dispatch(setUser(null))
   }
 
-  if (user === null) {
+  if (loggedUser === null) {
     return (
       <LoginForm />
     )
@@ -38,14 +50,22 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      <Notification />
-      <p>{user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
-      <CreateBlogForm />
-      <BlogList />
-      <h2>Users</h2>
-      <UsersView />
+      <div>
+        <Link style={padding} to='/'>home</Link>
+        <Link style={padding} to='/blogs'>blogs</Link>
+        <Link style={padding} to='/users'>users</Link>
+        <h2>blogs</h2>
+        <Notification />
+        <p>{loggedUser.name} logged in</p>
+        <button onClick={handleLogout}>logout</button>
+      </div>
+
+      <Routes>
+        <Route path='/blogs' element={<BlogList />} />
+        <Route path='/users' element={<UsersView />} />
+        <Route path='/users/:id' element={<User user={matchedUser} />} />
+        <Route path='/' element={<CreateBlogForm />} />
+      </Routes>
     </div>
   )
 }
