@@ -37,7 +37,6 @@ const Blog = ({ blog }) => {
       return loggedBlogappUser.username === blog.user.username
     }
   }
-
   return blog === undefined ? null :
     <div>
       <h2>{blog.title}</h2>
@@ -49,6 +48,11 @@ const Blog = ({ blog }) => {
       ) : (
         <div></div>
       )}
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map(comment =>
+          <li key={comment}>{comment}</li>)}
+      </ul>
     </div>
 }
 
