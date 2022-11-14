@@ -26,10 +26,6 @@ export const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
 
   useEffect(() => {
-    const getAll = async () => {
-      const response = await axios.get(baseUrl)
-      setResources(response.data)
-    }
     getAll()
   }, [baseUrl])
 
@@ -65,9 +61,7 @@ export const useResource = (baseUrl) => {
     const config = {
       headers: { Authorization: token },
     }
-    console.log(config)
-    const response = await axios.delete(`${baseUrl}/${id}`, config)
-    console.log(response)
+    await axios.delete(`${baseUrl}/${id}`, config)
     const updatedResources = resources.filter((resource) => resource.id !== id)
     setResources(updatedResources)
   }

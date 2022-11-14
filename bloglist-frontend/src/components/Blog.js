@@ -1,19 +1,10 @@
-import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useResource } from '../hooks'
+import { createNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, updateBlog, removeBlogWithId }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
-  const [detailedView, setDetailedView] = useState(false)
-
-  const toggleDetailedView = () => {
-    setDetailedView(!detailedView)
-  }
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch()
+  const [,blogService] = useResource('/api/blogs')
 
   const addLike = (event) => {
     event.preventDefault()
@@ -26,14 +17,15 @@ const Blog = ({ blog, updateBlog, removeBlogWithId }) => {
       url: blog.url,
     }
 
-    updateBlog(blog.id, updatedBlog)
+    blogService.update(blog.id, updatedBlog)
+    dispatch(createNotification(`added like for blog ${blog.title} by ${blog.author}`, 'info', 3))
   }
 
   const removeBlog = (event) => {
     event.preventDefault()
 
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      removeBlogWithId(blog.id)
+      blogService.remove(blog.id)
     }
   }
 
@@ -46,32 +38,18 @@ const Blog = ({ blog, updateBlog, removeBlogWithId }) => {
     }
   }
 
-  return (
-    <div style={blogStyle} className="blog">
-      <div>
-        {blog.title} {blog.author}
-      </div>
-      <button onClick={toggleDetailedView}>
-        {detailedView ? 'hide' : 'view'}
-      </button>
-      {detailedView ? (
-        <div>
-          <div>{blog.url}</div>
-          <div>
-            likes {blog.likes} <button onClick={addLike}>like</button>
-          </div>
-          <div>{blog.user.name}</div>
-          {permissionToDelete() ? (
-            <button onClick={removeBlog}>remove</button>
-          ) : (
-            <></>
-          )}
-        </div>
+  return blog === undefined ? null :
+    <div>
+      <h2>{blog.title}</h2>
+      <a href={blog.url}>{blog.url}</a>
+      <div>{blog.likes} likes <button onClick={addLike}>like</button></div>
+      <div>added by {blog.author}</div>
+      {permissionToDelete() ? (
+        <button onClick={removeBlog}>remove</button>
       ) : (
-        <></>
+        <div></div>
       )}
     </div>
-  )
 }
 
 export default Blog

@@ -1,33 +1,20 @@
 import { useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { createNotification } from '../reducers/notificationReducer'
-import { setBlogs } from '../reducers/blogsReducer'
 import Togglable from './Togglable'
 import { useField, useResource } from '../hooks'
 
 const CreateBlogForm = () => {
   const dispatch = useDispatch()
-  const [blogs, blogService] = useResource('/api/blogs')
+  const [, blogService] = useResource('/api/blogs')
 
   const { reset: resetNewTitle, ...newTitle } = useField('text')
   const { reset: resetNewAuthor, ...newAuthor } = useField('text')
   const { reset: resetNewURL, ...newURL } = useField('text')
 
-  const createBlog = async (blogObject) => {
-    try {
-      const returnedBlog = await blogService.create(blogObject)
-
-      dispatch(setBlogs(blogs.concat(returnedBlog)))
-      dispatch(createNotification(`a new blog ${blogObject.title} by ${blogObject.author} added`, 'info', 3))
-      createBlogFormRef.current.toggleVisibility()
-    } catch (exception) {
-      dispatch(createNotification(exception.response.data.error, 'alert', 3))
-    }
-  }
-
   const addBlog = (event) => {
     event.preventDefault()
-    createBlog({
+    blogService.create({
       title: newTitle.value,
       author: newAuthor.value,
       url: newURL.value,
@@ -35,6 +22,7 @@ const CreateBlogForm = () => {
     resetNewTitle()
     resetNewAuthor()
     resetNewURL()
+    dispatch(createNotification(`a new blog ${newTitle.value} by ${newAuthor.value} added`, 'info', 3))
   }
 
   const createBlogFormRef = useRef()
