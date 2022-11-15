@@ -1,8 +1,10 @@
 import { useDispatch } from 'react-redux'
 import { useResource } from '../hooks'
 import { createNotification } from '../reducers/notificationReducer'
+import AddComment from './AddComment'
 
 const Blog = ({ blog }) => {
+  console.log(blog)
   const dispatch = useDispatch()
   const [,blogService] = useResource('/api/blogs')
 
@@ -49,6 +51,7 @@ const Blog = ({ blog }) => {
         <div></div>
       )}
       <h3>comments</h3>
+      <AddComment blogID={blog.id} />
       <ul>
         {blog.comments.map(comment =>
           <li key={comment}>{comment}</li>)}

@@ -27,7 +27,6 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.post('/:id/comments', async (request, response) => { 
     const user = request.user
-
     if (user) {
         const blog = await Blog.findById(request.params.id)
         const comment = request.body.comment
