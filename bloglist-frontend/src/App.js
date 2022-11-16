@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from './reducers/userReducer'
 import UsersView from './components/UsersView'
 import { setToken } from './reducers/tokenReducer'
-import { Route, Routes, useMatch } from 'react-router-dom'
+import { Navigate, Route, Routes, useMatch } from 'react-router-dom'
 import { useResource } from './hooks'
 import User from './components/User'
 import Blog from './components/Blog'
@@ -45,7 +45,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <div>
         <NavigationBar />
         <h2>blog app</h2>
@@ -55,7 +55,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<BlogList />} />
         <Route path='/blogs' element={<BlogList />} />
-        <Route path='/blogs/:id' element={<Blog blog={matchedBlog} />} />
+        <Route path='/blogs/:id' element={matchedBlog ? <Blog blog={matchedBlog} /> : <Navigate replace to='/' />} />
         <Route path='/users' element={<UsersView />} />
         <Route path='/users/:id' element={<User user={matchedUser} />} />
       </Routes>

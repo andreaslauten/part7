@@ -1,13 +1,14 @@
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { useField } from '../hooks'
+import { useField, useResource } from '../hooks'
 import { createNotification } from '../reducers/notificationReducer'
-
+import { Form, Button } from 'react-bootstrap'
 
 const AddComment = ({ blogID }) => {
   const dispatch = useDispatch()
   const token = useSelector((state) => state.token)
-  const { reset, ...comment } = useField('text')
+  const { reset: resetCommentInput, ...comment } = useField('text')
+  const [,blogService] = useResource('/api/blogs')
 
   const addComment = async () => {
     const baseUrl = '/api/blogs'
@@ -18,14 +19,15 @@ const AddComment = ({ blogID }) => {
     const commentObject = { comment: comment.value }
 
     await axios.post(`${baseUrl}/${blogID}/comments`, commentObject, config)
-    reset()
+    resetCommentInput()
+    await blogService.getAll()
     dispatch(createNotification('comment added', 'info', 3))
   }
 
   return (
     <div>
-      <input { ...comment } />
-      <button onClick={addComment}>add comment</button>
+      <Form.Control { ...comment } />
+      <Button onClick={addComment}>add comment</Button>
     </div>
   )
 }

@@ -2,9 +2,9 @@ import { useDispatch } from 'react-redux'
 import { useResource } from '../hooks'
 import { createNotification } from '../reducers/notificationReducer'
 import AddComment from './AddComment'
+import { Button } from 'react-bootstrap'
 
 const Blog = ({ blog }) => {
-  console.log(blog)
   const dispatch = useDispatch()
   const [,blogService] = useResource('/api/blogs')
 
@@ -39,14 +39,15 @@ const Blog = ({ blog }) => {
       return loggedBlogappUser.username === blog.user.username
     }
   }
+
   return blog === undefined ? null :
     <div>
       <h2>{blog.title}</h2>
       <a href={blog.url}>{blog.url}</a>
-      <div>{blog.likes} likes <button onClick={addLike}>like</button></div>
+      <div>{blog.likes} likes <Button onClick={addLike}>like</Button></div>
       <div>added by {blog.author}</div>
       {permissionToDelete() ? (
-        <button onClick={removeBlog}>remove</button>
+        <Button onClick={removeBlog}>remove</Button>
       ) : (
         <div></div>
       )}

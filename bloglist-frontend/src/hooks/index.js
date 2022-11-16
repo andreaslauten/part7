@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setResources } from '../reducers/resourcesReducer'
+
+const getNameFromURL = (baseUrl) => {
+  let substringArray = baseUrl.split('/')
+  return substringArray.pop()
+}
 
 export const useField = (type) => {
   const [value, setValue] = useState('')
@@ -22,8 +28,12 @@ export const useField = (type) => {
 }
 
 export const useResource = (baseUrl) => {
+  const dispatch = useDispatch()
+  const resourcesName = getNameFromURL(baseUrl)
   const token = useSelector((state) => state.token)
-  const [resources, setResources] = useState([])
+  const resourcesContainer = useSelector((state) => state.resources)
+  const resourcesObject = resourcesContainer.find(res => res.name === resourcesName)
+  const resources = resourcesObject.dataArray
 
   useEffect(() => {
     getAll()
@@ -31,7 +41,7 @@ export const useResource = (baseUrl) => {
 
   const getAll = async () => {
     const response = await axios.get(baseUrl)
-    setResources(response.data)
+    dispatch(setResources(resourcesName, response.data))
   }
 
   const create = async (newObject) => {
@@ -40,7 +50,7 @@ export const useResource = (baseUrl) => {
     }
 
     const response = await axios.post(baseUrl, newObject, config)
-    setResources(resources.concat(response.data))
+    dispatch(setResources(resourcesName, resources.concat(response.data)))
   }
 
   const update = async (id, newObject) => {
@@ -53,8 +63,7 @@ export const useResource = (baseUrl) => {
     const updatedResources = resources.map((resource) =>
       resource.id === id ? updatedResource : resource
     )
-    setResources(updatedResources)
-    // createNotification(exception.response.data.error, 'alert', 3))
+    dispatch(setResources(resourcesName, updatedResources))
   }
 
   const remove = async (id) => {
@@ -63,7 +72,7 @@ export const useResource = (baseUrl) => {
     }
     await axios.delete(`${baseUrl}/${id}`, config)
     const updatedResources = resources.filter((resource) => resource.id !== id)
-    setResources(updatedResources)
+    dispatch(setResources(resourcesName, updatedResources))
   }
 
   const service = {

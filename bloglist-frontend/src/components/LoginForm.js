@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux'
 import Notification from './Notification'
 import loginService from '../services/login'
 import { createNotification } from '../reducers/notificationReducer'
-// import blogService from '../services/blogs'
 import { setUser } from '../reducers/userReducer'
 import { setToken } from '../reducers/tokenReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -35,31 +35,29 @@ const LoginForm = () => {
     <div>
       <h2>Log in to application</h2>
       <Notification />
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control
             id="username"
             type="text"
             value={username}
             name="Username"
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-          password
-          <input
+          <Form.Label>password:</Form.Label>
+          <Form.Control
             id="password"
             type="password"
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button id="login-button" type="submit">
+        </Form.Group>
+        <Button id="login-button" type="submit">
           login
-        </button>
-      </form>
+        </Button>
+      </Form>
     </div>
   )
 }
